@@ -1,0 +1,60 @@
+# Processado pelo envsubst da imagem oficial na inicialização:
+# /etc/nginx/templates/default.conf.template -> /etc/nginx/conf.d/default.conf.
+# Só variáveis de ambiente definidas (ex.: ORDERS_API_URL) são substituídas; $uri, $host etc. ficam intactas.
+server {
+    listen 8080;
+    server_name _;
+    root /usr/share/nginx/html;
+    index index.html;
+    server_tokens off;
+
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+
+    # Headers de segurança para todas as respostas.
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Content-Security-Policy "default-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'" always;
+
+    # Probe de saúde (será usada pelas probes do Kubernetes numa etapa futura).
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    # O frontend sempre chama /api/... no mesmo host; o nginx encaminha para o Orders (por isso não há CORS).
+    # Sem barra final no proxy_pass: a URI original (/api/v1/...) é repassada como veio.
+    location /api/ {
+        proxy_pass ${ORDERS_API_URL};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Correlation-Id $http_x_correlation_id;
+        proxy_set_header Idempotency-Key $http_idempotency_key;
+    }
+
+    # Arquivos gerados pelo Vite têm hash no nome, então podem ficar em cache indefinidamente.
+    # Um add_header dentro de location normalmente descarta os herdados do server; "merge" mantém os de segurança.
+    location /assets/ {
+        add_header_inherit merge;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        try_files $uri =404;
+    }
+
+    # index.html sempre revalidado, para que um build novo seja percebido imediatamente.
+    location = /index.html {
+        add_header_inherit merge;
+        add_header Cache-Control "no-cache" always;
+    }
+
+    # Fallback de SPA: rotas do React Router (ex.: /orders/123) devolvem o index.html.
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

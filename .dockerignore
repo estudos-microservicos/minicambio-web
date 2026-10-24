@@ -1,0 +1,16 @@
+# Dependências e saídas geradas no host
+node_modules/
+dist/
+coverage/
+
+# Git, IDEs e arquivos locais
+.git/
+.vscode/
+.idea/
+.env
+*.local
+
+# Arquivos que não fazem parte do build
+Dockerfile
+.dockerignore
+*.md
