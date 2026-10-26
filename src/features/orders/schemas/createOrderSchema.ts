@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+// A CSP do nginx (default-src 'self') proíbe eval. Sem isso o Zod testa `new Function` para o modo JIT e o
+// navegador registra uma violação de CSP no console (o erro é engolido, mas polui o console).
+z.config({ jitless: true })
+
 export const CURRENCIES = ['USD', 'EUR', 'GBP', 'CHF'] as const
 
 // Lista curta, incluindo os países bloqueados pelo mock do Payments (KP e IR) para permitir testar a recusa.
