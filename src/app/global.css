@@ -16,6 +16,9 @@
   --color-primary-hover: #094a8c;
   --color-on-primary: #ffffff;
   --color-focus: #0b5cad;
+  --color-danger: #b3261e;
+  --color-danger-hover: #8c1d18;
+  --color-on-danger: #ffffff;
 
   /* Tons dos badges de status e avisos. */
   --tone-info-bg: #ddeeff;
@@ -53,6 +56,9 @@
     --color-primary-hover: #6cabff;
     --color-on-primary: #0d1117;
     --color-focus: #6cabff;
+    --color-danger: #ff7b72;
+    --color-danger-hover: #ffa198;
+    --color-on-danger: #0d1117;
 
     --tone-info-bg: #0c2d6b;
     --tone-info-text: #a5d6ff;
@@ -90,6 +96,19 @@ p {
 :focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+/* Visível só para leitores de tela. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

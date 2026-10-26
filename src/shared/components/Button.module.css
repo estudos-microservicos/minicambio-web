@@ -1,10 +1,14 @@
 .button {
+  display: inline-block;
   font: inherit;
   font-weight: 600;
+  line-height: 1.5;
   padding: var(--space-2) var(--space-4);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   cursor: pointer;
+  text-decoration: none;
+  text-align: center;
 }
 
 .primary {
@@ -24,6 +28,15 @@
 
 .secondary:hover:not(:disabled, [aria-disabled='true']) {
   background: var(--color-surface-muted);
+}
+
+.danger {
+  background: var(--color-danger);
+  color: var(--color-on-danger);
+}
+
+.danger:hover:not(:disabled, [aria-disabled='true']) {
+  background: var(--color-danger-hover);
 }
 
 /* aria-disabled mantém o botão focável, então o foco do teclado não se perde quando ele é desabilitado. */

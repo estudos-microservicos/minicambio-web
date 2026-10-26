@@ -1,0 +1,22 @@
+.countdown {
+  display: inline-block;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--tone-info-bg);
+  color: var(--tone-info-text);
+  font-weight: 600;
+}
+
+.warning {
+  background: var(--tone-progress-bg);
+  color: var(--tone-progress-text);
+}
+
+.expired {
+  background: var(--tone-neutral-bg);
+  color: var(--tone-neutral-text);
+}
+
+.time {
+  font-variant-numeric: tabular-nums;
+}

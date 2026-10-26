@@ -16,8 +16,13 @@ export function AppLayout() {
             <ul className={styles.navList}>
               <li>
                 {/* NavLink marca o item ativo com aria-current="page", que também é usado no CSS. */}
-                <NavLink to="/orders" className={styles.navLink}>
+                <NavLink to="/orders" end className={styles.navLink}>
                   Ordens
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/orders/new" className={styles.navLink}>
+                  Nova ordem
                 </NavLink>
               </li>
             </ul>

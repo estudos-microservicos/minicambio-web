@@ -17,6 +17,13 @@
   color: var(--color-text-muted);
 }
 
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+}
+
 .staleWarning {
   margin-bottom: var(--space-4);
   padding: var(--space-3) var(--space-4);

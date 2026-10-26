@@ -1,0 +1,37 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.label {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.error {
+  color: var(--tone-danger-text);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+/* Estilo compartilhado pelos controles passados como filhos (input e select). */
+.field :is(input, select) {
+  font: inherit;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.field :is(input, select)[aria-invalid='true'] {
+  border-color: var(--tone-danger-text);
+  box-shadow: 0 0 0 1px var(--tone-danger-text);
+}

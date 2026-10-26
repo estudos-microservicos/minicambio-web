@@ -24,6 +24,15 @@ export function isOrderStatus(value: unknown): value is OrderStatus {
   return ORDER_STATUSES.some((status) => status === value)
 }
 
+export type Beneficiary = {
+  name: string
+  country: string
+  accountNumber: string
+}
+
+// Códigos devolvidos pelo mock de pagamentos (Payments) e repassados pelo Orders.
+export type FailureReason = 'BENEFICIARY_REJECTED' | 'COMPLIANCE_BLOCKED' | 'LIMIT_EXCEEDED'
+
 export type Order = {
   id: string
   currency: string
@@ -33,9 +42,7 @@ export type Order = {
   rate: number
   brlAmount: number
   quoteExpiresAt: string
-  beneficiaryName: string
-  beneficiaryCountry: string
-  beneficiaryAccount: string
+  beneficiary: Beneficiary
   status: OrderStatus
   paymentId: string | null
   failureReason: string | null
@@ -54,6 +61,13 @@ export type PagedResult<T> = {
   pageSize: number
   totalCount: number
   servedBy: string
+}
+
+export type CreateOrderRequest = {
+  currency: string
+  side: OrderSide
+  foreignAmount: number
+  beneficiary: Beneficiary
 }
 
 export type ListOrdersParams = {

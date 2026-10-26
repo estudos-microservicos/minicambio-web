@@ -104,18 +104,63 @@ describe('OrdersListPage', () => {
     expect(screen.getByRole('button', { name: 'Anterior' }).getAttribute('aria-disabled')).toBe('false')
   })
 
-  it('mostra o estado vazio quando não há ordens', async () => {
+  it('mostra o estado vazio quando não há ordens, com link para criar uma', async () => {
     renderApp('/orders')
 
     expect(await screen.findByText('Nenhuma ordem encontrada.')).toBeDefined()
     expect(screen.queryByRole('table')).toBeNull()
+    expect(screen.getByRole('link', { name: 'Criar ordem' }).getAttribute('href')).toBe('/orders/new')
+  })
+
+  it('mostra "Ver detalhes" em todas as linhas e "Cancelar" só quando canCancel', async () => {
+    const quoted = buildOrder({ status: 'Quoted', canCancel: true })
+    respondWith(buildPage([quoted, buildOrder({ status: 'Completed', canConfirm: false, canCancel: false })]))
+
+    renderApp('/orders')
+
+    const table = await screen.findByRole('table', { name: /2 ordens/ })
+    const [, quotedRow, completedRow] = within(table).getAllByRole('row')
+    expect(
+      within(quotedRow)
+        .getByRole('link', { name: /Ver detalhes/ })
+        .getAttribute('href'),
+    ).toBe(`/orders/${quoted.id}`)
+    within(quotedRow).getByRole('button', { name: /Cancelar/ })
+    within(completedRow).getByRole('link', { name: /Ver detalhes/ })
+    expect(within(completedRow).queryByRole('button', { name: /Cancelar/ })).toBeNull()
+  })
+
+  it('cancela pela lista depois de confirmar no diálogo', async () => {
+    let order = buildOrder({ status: 'Quoted', canCancel: true })
+    const cancelled: string[] = []
+    server.use(
+      http.get(ORDERS_URL, () => HttpResponse.json(buildPage([order]))),
+      http.delete(`${ORDERS_URL}/:id`, ({ params }) => {
+        cancelled.push(String(params.id))
+        order = { ...order, status: 'Cancelled', canConfirm: false, canCancel: false }
+        return new HttpResponse(null, { status: 204 })
+      }),
+    )
+    const { user } = renderApp('/orders')
+
+    await user.click(await screen.findByRole('button', { name: /Cancelar/ }))
+    const dialog = await screen.findByRole('dialog', { name: 'Cancelar ordem?' })
+    await user.click(within(dialog).getByRole('button', { name: 'Sim, cancelar ordem' }))
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
+    expect(cancelled).toEqual([order.id])
+    const table = screen.getByRole('table')
+    expect(await within(table).findByText('Cancelada')).toBeDefined()
+    expect(within(table).queryByRole('button', { name: /Cancelar/ })).toBeNull()
+    await waitFor(() => expect(screen.getByTestId('live-announcer').textContent).toBe('Ordem cancelada.'))
   })
 
   it('mostra o erro da API e permite tentar novamente', async () => {
     server.use(
       http.get(
         ORDERS_URL,
-        () => HttpResponse.json({ title: 'Serviço indisponível', detail: 'O Orders está fora do ar.' }, { status: 503 }),
+        () =>
+          HttpResponse.json({ title: 'Serviço indisponível', detail: 'O Orders está fora do ar.' }, { status: 503 }),
         { once: true },
       ),
       http.get(ORDERS_URL, () => HttpResponse.json(buildPage([buildOrder()]))),
