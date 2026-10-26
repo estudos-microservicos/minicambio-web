@@ -1,0 +1,35 @@
+.badge {
+  display: inline-block;
+  padding: 0.125rem var(--space-2);
+  /* Borda transparente para o badge continuar delimitado no modo de alto contraste do Windows. */
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.info {
+  background: var(--tone-info-bg);
+  color: var(--tone-info-text);
+}
+
+.progress {
+  background: var(--tone-progress-bg);
+  color: var(--tone-progress-text);
+}
+
+.success {
+  background: var(--tone-success-bg);
+  color: var(--tone-success-text);
+}
+
+.danger {
+  background: var(--tone-danger-bg);
+  color: var(--tone-danger-text);
+}
+
+.neutral {
+  background: var(--tone-neutral-bg);
+  color: var(--tone-neutral-text);
+}

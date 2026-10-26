@@ -1,0 +1,44 @@
+/* Em telas estreitas a tabela rola na horizontal dentro do cartão, sem rolar a página inteira. */
+.wrapper {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.caption {
+  caption-side: top;
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.table th,
+.table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  white-space: nowrap;
+  border-top: 1px solid var(--color-border);
+}
+
+.table th {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+}
+
+.table tbody tr:hover {
+  background: var(--color-surface-muted);
+}
+
+.table .numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
